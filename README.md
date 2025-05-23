@@ -13,40 +13,23 @@ This project is a smart assistant chat interface that supports command-style plu
 
 ---
 
-## 🛠️ Setup & Running Instructions
+## 🔍 **Plugin Architecture**
 
-### 1. Clone the Repository
+### 🧠 How It Works
 
-```bash
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
-
-
-
-
-
-Install Dependencies
-npm install
-
-
-Start the Development Server
-npm run dev
-
-
-🔍 Plugin Architecture
-
-🧠 How It Works
-Command Parsing is done using a dispatcher function that analyzes user input and routes it to the appropriate plugin.
+Command parsing is handled using a dispatcher function that analyzes user input and routes it to the appropriate plugin.
 
 Each plugin is a standalone function that:
 
-Extracts arguments (e.g., city for /weather)
+- Extracts arguments (e.g., city for `/weather`)
+- Calls the respective API
+- Returns a response string and optional plugin metadata
 
-Calls the respective API
+---
 
-Returns a response string and optional plugin metadata
+## 📁 File Structure
 
-📁 File Structure
+```
 /src
   /plugins
     weather.js
@@ -55,60 +38,88 @@ Returns a response string and optional plugin metadata
   /utils
     dispatcher.js
     chatUtils.js
- /components
+  /components
     ChatInput.jsx
     ChatContainer.jsx
+```
 
+---
 
+## 🔌 Plugins Implemented
 
-🔌 Plugins Implemented
-1. /weather [city]
-API: OpenWeatherMap
+### 1. `/weather [city]`
+- **API**: OpenWeatherMap  
+- **Description**: Returns current weather conditions and temperature.
 
-Description: Returns current weather conditions and temperature.
+### 2. `/define [word]`
+- **API**: Free Dictionary API  
+- **Description**: Provides the primary definition of a word.
 
-2. /define [word]
-API: Free Dictionary API
+### 3. `/calc [expression]`
+- **Library**: Uses `mathjs` internally  
+- **Description**: Evaluates basic mathematical expressions.
 
-Description: Provides the primary definition of a word.
+---
 
-3. /calc [expression]
-Library: Uses mathjs internally
+## 🧠 Parsing & Dispatch Logic
 
-Description: Evaluates basic mathematical expressions.
+All input is passed to the function:  
+`handleInput(input, setChatHistory, timeoutRef)`
 
+Which:
 
+- Matches against known plugin prefixes (`/weather`, `/define`, etc.)
+- Validates arguments (e.g., presence of a city or word)
+- Invokes the appropriate plugin logic
+- Returns structured assistant responses via `simulateAssistantResponse`
 
-🧠 Parsing & Dispatch Logic
-All input is passed to handleInput(input, setChatHistory, timeoutRef), which:
+---
 
-Matches against known plugin prefixes (/weather, /define, etc.)
+## 💬 Message Structure
 
-Validates arguments (e.g., presence of a city or word)
-
-Invokes the appropriate plugin logic
-
-Returns structured assistant response via simulateAssistantResponse
-
-
-
-
-💬 Message Structure
 Each chat message conforms to the following schema:
+
+```js
 {
-  id: string; // UUID
-  sender: "user" | "assistant";
-  content: string; // Raw text or markdown
-  type: "text" | "plugin"; // Distinguishes normal vs plugin messages
-  pluginName?: string; // e.g., "weather"
-  pluginData?: any; // Plugin-specific structured data
-  timestamp: string; // ISO timestamp
+  id: string,              // UUID
+  sender: "user" | "assistant",
+  content: string,         // Raw text or markdown
+  type: "text" | "plugin", // Distinguishes normal vs plugin messages
+  pluginName?: string,     // e.g., "weather"
+  pluginData?: any,        // Plugin-specific structured data
+  timestamp: string        // ISO timestamp
 }
+```
 
+---
 
+## 🛠️ Setup & Running Instructions
 
-🧪 Example Usage
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/your-repo-name.git
+cd your-repo-name
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Start the Development Server
+
+```bash
+npm run dev
+```
+
+---
+
+## 🧪 Example Usage
+
+```bash
 /weather Tokyo
 /define serendipity
 /calc 5 * (3 + 2)
-
+```
