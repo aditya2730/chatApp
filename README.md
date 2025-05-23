@@ -1,12 +1,114 @@
-# React + Vite
+# 🔌 AI Chatbot with Plugin-Based Architecture
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a smart assistant chat interface that supports command-style plugins like `/weather`, `/define`, and `/calc`. It is built with React and allows easy extension through a plugin-based architecture.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📦 Features
 
-## Expanding the ESLint configuration
+- Plugin support via slash commands (e.g., `/weather Mumbai`)
+- Plugin output handled with contextual UI rendering
+- Graceful fallback for unsupported commands
+- Asynchronous assistant responses with loading indicator
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🛠️ Setup & Running Instructions
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/your-repo-name.git
+cd your-repo-name
+
+
+
+
+
+Install Dependencies
+npm install
+
+
+Start the Development Server
+npm run dev
+
+
+🔍 Plugin Architecture
+
+🧠 How It Works
+Command Parsing is done using a dispatcher function that analyzes user input and routes it to the appropriate plugin.
+
+Each plugin is a standalone function that:
+
+Extracts arguments (e.g., city for /weather)
+
+Calls the respective API
+
+Returns a response string and optional plugin metadata
+
+📁 File Structure
+/src
+  /plugins
+    weather.js
+    define.js
+    calc.js
+  /utils
+    dispatcher.js
+    chatUtils.js
+ /components
+    ChatInput.jsx
+    ChatContainer.jsx
+
+
+
+🔌 Plugins Implemented
+1. /weather [city]
+API: OpenWeatherMap
+
+Description: Returns current weather conditions and temperature.
+
+2. /define [word]
+API: Free Dictionary API
+
+Description: Provides the primary definition of a word.
+
+3. /calc [expression]
+Library: Uses mathjs internally
+
+Description: Evaluates basic mathematical expressions.
+
+
+
+🧠 Parsing & Dispatch Logic
+All input is passed to handleInput(input, setChatHistory, timeoutRef), which:
+
+Matches against known plugin prefixes (/weather, /define, etc.)
+
+Validates arguments (e.g., presence of a city or word)
+
+Invokes the appropriate plugin logic
+
+Returns structured assistant response via simulateAssistantResponse
+
+
+
+
+💬 Message Structure
+Each chat message conforms to the following schema:
+{
+  id: string; // UUID
+  sender: "user" | "assistant";
+  content: string; // Raw text or markdown
+  type: "text" | "plugin"; // Distinguishes normal vs plugin messages
+  pluginName?: string; // e.g., "weather"
+  pluginData?: any; // Plugin-specific structured data
+  timestamp: string; // ISO timestamp
+}
+
+
+
+🧪 Example Usage
+/weather Tokyo
+/define serendipity
+/calc 5 * (3 + 2)
+
